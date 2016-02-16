@@ -26,7 +26,7 @@
     self  = [super initWithFrame:frame];
     if (self) {
         
-        btnCount = 10;//小按钮的个数
+        btnCount = 6;//小按钮的个数
         
         //        默认灰色图片
         UIImage *BottomLineImg = [UIImage imageNamed:@"btn_jian_gray"];
@@ -102,7 +102,7 @@
         
     }else if (pan.state == UIGestureRecognizerStateChanged){
         
-        [self setBtnSelected:self.touchView.frame.origin.x/btnSpace+1];
+        [self setBtnSelected:self.touchView.frame.origin.x/btnSpace];
         
     }
 }
@@ -111,7 +111,7 @@
     
     CGFloat  touchConstant = self.touchView.frame.origin.x;
     CGFloat Space = btnSpace/2.0;
-    CGFloat  count = touchConstant/Space;
+    CGFloat  count = floor(touchConstant/Space);
     NSInteger  index = ceil(count/2.0);
     //
     [self setBtnSelected:index];
@@ -122,7 +122,7 @@
     UIButton *btn = (UIButton *)sender;
     NSInteger tag = btn.tag;
     [self UpdateTouchViewOriginX:(tag-1)*btnSpace];
-    [self setBtnSelected:tag];
+    [self setBtnSelected:tag-1];
 }
 
 //更新TouchView
@@ -133,12 +133,15 @@
     } completion:^(BOOL finished) {
         NSLog(@"constant  is %f tag is %.0f",constant,constant/btnSpace);
     }];
+    if ([self.delegate respondsToSelector:@selector(SliderValue:)]) {
+        [self.delegate SliderValue:constant/btnSpace];
+    }
 }
 //更新小按钮
 - (void)setBtnSelected:(NSInteger)tag{
     for (int i = 0; i<btnCount; i++) {
         UIButton *btn = (UIButton *)[self viewWithTag:i+1];
-        if (i<tag) {
+        if (i<=tag) {
             btn.backgroundColor = [UIColor redColor];
         }else{
             btn.backgroundColor = [UIColor whiteColor];
@@ -152,12 +155,5 @@
     [self UpdateTouchViewOriginX:value*btnSpace];
     [self setBtnSelected:value];
 }
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect {
- // Drawing code
- }
- */
 
 @end

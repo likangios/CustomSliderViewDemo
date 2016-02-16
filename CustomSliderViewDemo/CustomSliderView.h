@@ -8,7 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol CustomSliderViewDelegate <NSObject>
+
+- (void)SliderValue:(CGFloat)value;
+
+@end
+
 @interface CustomSliderView : UIView
+
+@property (nonatomic,weak) id <CustomSliderViewDelegate> delegate;
 
 /**
  *  显示到第几个按钮 从0开始 0~（btnCount-1）
